@@ -1,13 +1,12 @@
 Qvod Searcher
 ------------
-* Core: PHP CURL()
+* Core: CURL()
 * Data: 9skb.com
-* 去掉了碍眼的广告，获取列表后显示
+* AD, List Only
 
 运行环境
 ------------
 * PHP with CURL
-
 
 适用
 ------------
