@@ -2,7 +2,7 @@
 <?php
 $hid = $_REQUEST["id"];
 
-$url = "http://www.9skb.info/SResultItem/".$hid.".html";
+$url = "http://www.9skb.com/SResultItem/".$hid.".html";
 
 $result = CURL_GET($url);
 

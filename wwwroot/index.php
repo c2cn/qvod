@@ -2,14 +2,16 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=GB2312" />
 <title>QVOD 资源搜索</title>
-<link href="css/style.css" rel="stylesheet" type="text/css" />
-<script src="js/main.js" language="javascript"></script>
+<link href="http://www.9skb.com/templates/Default/style/css/kbweb20120412.css" rel="stylesheet" type="text/css" />
+<script src="ajax.js" language="javascript"></script>
 </head>
 <body>
+<div id="main" style="width:888px;margin:10px auto;">
 <?php
-$version = "2011.12.31";
+$version = "2012.05.29";
 
-function CURL_GET($u){
+function CURL_GET($u)
+{
 	$ch = curl_init($u);
 	curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch,CURLOPT_HEADER,false);
@@ -25,23 +27,19 @@ function convertStr($str) {
 		$cstr .= "%".strtoupper(base_convert(ord($str{$i}), 10, 16));
 	}
 	return $cstr;
-	/*
-	return rawurlencode(mb_convert_encoding($str, 'gb2312', 'utf-8'));
-	*/
 }
-
 $title = isset($_REQUEST["s"])?$_REQUEST["s"]:"";
 $title_cn = $title;
-//$title_cn = mb_convert_encoding($title,'gb2312','utf-8');
 
-if ($title==""){
+if ($title=="")
+{
 
 	echo <<<END
-	<form action="" method="get">
-	<div style="margin:50px auto;padding:50px;width:600px;border:#333 10px solid;">
-	QVOD资源搜索: 
-	<input type=text name=s id=s value="">
-	<input type=submit value=" 搜索 " onclick="if(s.value==''){alert('不能为空!');s.focus();return false;}else{location.href='index.php?s='+s.value;return false;}">
+	<form action="index.php" method="get">
+	<div style="margin:50px auto;padding:50px;width:80%;border:#333 5px solid;font-size:24px;line-height:36px;">
+	QVOD资源(数据来源: http://www.9skb.com/): <BR/><BR/>
+	<input type=text name=s id=s value="" style="height:50px;font-size:36px;font-family:verdana;"> 
+	<input type=submit value=" 搜索 " style="height:50px;font-size:36px;font-family:verdana;" onclick="if(s.value==''){alert('不能为空!');s.focus();return false;}else{location.href='index.php?s='+s.value;return false;}">
 	</form>
 	</div>
 END;
@@ -49,23 +47,33 @@ END;
 	?>
 	<script>document.title="<?php echo "QVOD搜索结果: ".$title_cn;?>";</script>
 	<div style="text-align:center">
-		<span style="font-size:18px;color:red;"><?php echo $title_cn;?></span> <span style="color:gray;">( 本站只提供片源索引, 观察影片需点击加号(+)选择片源观看。<a href='javascript:history.go(-1)'>返回</a> )</span>
-		<BR/>
+		<span style="font-size:18px;color:red;"><?php echo $title_cn;?></span>
+		<span style="color:gray;">
+			(
+				本站数据全部来自: http://www.9skb.com/
+				<a href='javascript:history.go(-1)'>返回</a> 
+			)
+			</span>
 	</div>
-	<hr>
-	<?
+	<BR/><BR/>
+	<?php
+
 	$title = convertStr($title);
-	$source = "http://www.9skb.cc/?k=";
+
+	$source = "http://www.9skb.com/?k=";
+
 	$url = $source.$title;
+
 	$result = CURL_GET($url);
-	$sflag = strpos($result,'<table id="ResultTb"');
-	$eflag = strpos($result,'</table>');
+	$sflag = strpos($result,'<div class="containerborder">');
+	$eflag = strpos($result,'<div class="ResultPage">');
+
 	if($sflag>0 && $eflag>0) {
-		$result = substr($result,$sflag,$eflag-$sflag+8);
-		$result = str_ireplace('/templates/Default/images/hot/','images/',$result);
-		$result = str_ireplace('/templates/Default/images/','images/',$result);
-		$result = preg_replace('/<a href="\/movie\/(\d+)\.html\?.*" id=/i',' &nbsp;<a href="movie.php?id=$1" id=',$result);
-		$result = preg_replace('/<img src=.*\/>\s/i','',$result);
+		$result = substr($result,$sflag,$eflag-$sflag+strlen($eflag));
+		$result = str_ireplace('/templates/','http://www.9skb.com/templates/',$result);
+		$result = str_ireplace('<img onclick=','<img style="cursor:hand;" onclick=',$result);
+		$result = preg_replace('/\/movie\/(\d+)\.html[^"]+/i','/goplay/$1.html',$result);
+		$result = preg_replace('/\/goplay\/(\d+).html/i','http://www.9skb.com/goplay/$1.html',$result);
 		echo $result;
 	} else {
 		echo "未找到相关资源! <a href='javascript:history.go(-1)'>返回</a>";
@@ -73,6 +81,8 @@ END;
 
 }
 ?>
-<center><p>powered by FB.team.AJ ver <?php echo $version;?></p></center>
+	<BR/><BR/><center style="font-size:15px;font-family:verdana;"><p>Powered by <a href='http://www.6zou.net/'>XTEAM.AJ</a>, last update <?php echo $version;?></p></center>
+</div>
+
 </body>
 </html>
