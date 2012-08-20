@@ -6,7 +6,7 @@ Qvod Searcher
 
 运行环境
 ------------
-* PHP with CURL / SAE
+* SAE (SaeFetchurl)
 
 适用
 ------------
