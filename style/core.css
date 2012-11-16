@@ -1,0 +1,125 @@
+body
+{
+	font-size   : 13px;
+	font-family : verdana;
+	line-height : 24px;
+}
+
+a:link
+{
+	color:#333;
+	text-decoration : none;
+}
+
+a:hover
+{
+	color:red;
+	text-decoration : underline;
+}
+
+a:visited {
+	color:#666;
+	text-decoration : none;
+}
+
+.title
+{
+	background-color : #666;
+	color            : #FFF;
+	padding          : 5px;
+	font-size        : 14px;
+	font-weight      : bold;
+}
+
+.clear
+{
+	clear       : both;
+	line-height : 50px;
+}
+
+.info
+{
+	line-height : 32px;
+	height      : 32px;
+}
+
+.movelist>.info
+{
+	line-height : 50px;
+	height      : 50px;
+}
+
+.wcol1
+{
+	float : left;
+	width : 5%;
+}
+
+.wcol2
+{
+	float : left;
+	width : 45%;
+}
+
+.wcol3
+{
+	float : left;
+	width : 10%;
+}
+
+.wcol4
+{
+	float : left;
+	width : 10%;
+}
+
+.wcol5
+{
+	float : left;
+	width : 10%;
+}
+
+.wcol6
+{
+	float : left;
+	width : 10%;
+}
+
+.wcol7
+{
+	float : left;
+	width : 10%;
+}
+
+.movelist>.info>.wcol5
+{
+	padding-top : 20px;
+}
+
+.urllist
+{
+	width    : 100%;
+	overflow : hidden;
+}
+
+.urllist span
+{
+	float : left;
+}
+
+.urllist a
+{
+	display : block;
+	float   : left;
+	padding : 5px;
+}
+
+.hidden
+{
+	display : none;
+}
+
+#la a:link
+{
+	color : #FFF;
+}
