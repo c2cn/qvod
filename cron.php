@@ -109,22 +109,22 @@ function douban()
         {
             $douban[2][$i] = preg_replace( '/&nbsp;[^\(]+/i', '', $douban[2][$i] );
             if( $douban[2][$i]!='' && $douban[1][$i]!='' )
-            	$html .= $douban[2][$i].'|||'.$douban[1][$i]."\n";
+            	$html .= $douban[2][$i].'|||http://kansha.baidu.com/'.$douban[1][$i]."\n";
         }
         if( strlen($html)>50 )
         {
             $s->delete( $d, $f );
             $s->write( $d, $f, strtoupper($f)."\n".$html, -1, array(), false );
-	        echo "mtime: 1, OK\n";
+	        echo "douban: 1, OK\n";
         }
         else
         {
-	        echo "mtime: 1, FAILD\n";
+	        echo "douban: 1, FAILD\n";
         }
     }
     else
     {
-        echo 'mtime: 0, '.$days->format('%d')."-days \n";
+        echo 'douban: 0, '.$days->format('%d')."-days \n";
     }
 }
 
