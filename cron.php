@@ -1,26 +1,7 @@
 <?php
 header("Content-Type: text/plain");
 
-//SAE -> SaeStorage -> READ
-function SAE_READ( $domain='list', $file )
-{
-    $s = new SaeStorage();
-    $r = $s->read( $domain, $file );
-    if( !$r )
-    	return 'ERROR';
-    return $r;
-}
-
-//SAE -> SaeStorage -> WRITE
-function SAE_WRITE( $domain='list', $file, $str )
-{
-    $s = new SaeStorage();
-    $r = $s->write( $domain, $file, $str );
-    if( !$r )
-    	return 'ERROR';
-    return $r;
-}
-
+if( !class_exists('SaeFetchurl') ) require( 'fakeSAE.php' );
 //SAE -> FetchUrl -> GET
 function SAE_GET( $url )
 {
@@ -43,20 +24,33 @@ function SAE_POST( $url, $data )
     return $result;
 }
 
-//--core---
-imdb();
-douban();
-mtime();
-latest();
+//SAE -> SaeStorage -> READ
+function SAE_READ( $domain='list', $file )
+{
+    $s = new SaeStorage();
+    $r = $s->read( $domain, $file );
+    if( !$r )
+        return 'ERROR';
+    return $r;
+}
 
+//SAE -> SaeStorage -> WRITE
+function SAE_WRITE( $domain='list', $file, $str )
+{
+    $s = new SaeStorage();
+    $r = $s->write( $domain, $file, $str );
+    if( !$r )
+        return 'ERROR';
+    return $r;
+}
 
 //IMDB-TOP250-CN
 function imdb()
 {
     $d    = 'list';
-    $f    = 'imdb_top250';    
-	$s    = new SaeStorage();
-    $last = $s->getAttr( $d, $f);
+    $f    = 'imdb_top250';
+    $s    = new SaeStorage();
+    $lastupdate = $s->getAttr( $d, $f);
 
     $now    = new DateTime('now');
     $ftime  = new DateTime( date('Y-m-d H:i:s', $lastupdate['datetime']) );
@@ -96,8 +90,8 @@ function douban()
 {
     $d    = 'list';
     $f    = 'douban_top250';    
-	$s    = new SaeStorage();
-    $last = $s->getAttr( $d, $f);
+    $s    = new SaeStorage();
+    $lastupdate = $s->getAttr( $d, $f);
 
     $now    = new DateTime('now');
     $ftime  = new DateTime( date('Y-m-d H:i:s', $lastupdate['datetime']) );
@@ -105,12 +99,12 @@ function douban()
 
     if( $days->format('%d')>30 || !$s->fileExists($d,$f)  )
     {
+        $html = '';
         for( $i=1; $i<=25; $i++ )
-        {
             $html .= SAE_GET( 'http://kansha.baidu.com/collection/802?p='.$i );
-        }
         preg_match_all( '/<a href="([^"]+)" target="_blank">([^<]+)<\/a>/i', $html, $douban);
         $html = '';
+
 		for( $i=0; $i<count( $douban[2] ); $i++ )
         {
             $douban[2][$i] = preg_replace( '/&nbsp;[^\(]+/i', '', $douban[2][$i] );
@@ -139,8 +133,8 @@ function mtime()
 {
     $d    = 'list';
     $f    = 'mtime_top100';    
-	$s    = new SaeStorage();
-    $last = $s->getAttr( $d, $f);
+    $s    = new SaeStorage();
+    $lastupdate = $s->getAttr( $d, $f);
 
     $now    = new DateTime('now');
     $ftime  = new DateTime( date('Y-m-d H:i:s', $lastupdate['datetime']) );
@@ -179,16 +173,16 @@ function mtime()
 //--最新上映--
 function latest()
 {
-    $d    = 'custom';
-    $f    = '_newest';    
-	$s    = new SaeStorage();
-    $last = $s->getAttr( $d, $f);
+    $d    = 'list';
+    $f    = '_newest';
+    $s    = new SaeStorage();
+    $lastupdate = $s->getAttr( $d, $f);
 
     $now    = new DateTime('now');
     $ftime  = new DateTime( date('Y-m-d H:i:s', $lastupdate['datetime']) );
 	$days   = $now->diff($ftime);
 
-    if( $days->format('%d')>2 || !$s->fileExists($d,$f)  )
+    if( $days->format('%d')>1 || !$s->fileExists($d,$f)  )
     {
 	    $html = SAE_GET( 'http://movie.mtime.com/new/release/' );
 		for( $i=1; $i<5; $i++ )
@@ -217,3 +211,9 @@ function latest()
         echo 'mtime: 0, '.$days->format('%d')."-days \n";
     }   
 }
+
+//--core---
+latest();
+imdb();
+douban();
+mtime();

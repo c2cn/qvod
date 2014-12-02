@@ -12,6 +12,7 @@ $ret = array(
     'data' => array()
 );
 
+if( !class_exists('SaeFetchurl') ) require( 'fakeSAE.php' );
 //SAE -> FetchUrl -> GET
 function SAE_GET( $url )
 {
@@ -40,7 +41,7 @@ function SAE_READ( $domain='list', $file )
     $s = new SaeStorage();
     $r = $s->read( $domain, $file );
     if( !$r )
-    	return 'ERROR';
+        return 'ERROR';
     return $r;
 }
 
@@ -50,10 +51,9 @@ function SAE_WRITE( $domain='list', $file, $str )
     $s = new SaeStorage();
     $r = $s->write( $domain, $file, $str );
     if( !$r )
-    	return 'ERROR';
+        return 'ERROR';
     return $r;
 }
-
 
 
 //--dispatch--
@@ -211,11 +211,12 @@ if( $movie!='' )
         	$ret['type'] = 'json';
             $ret['data'] = qvod($movie);
 	}
-	if( $ret['data'][0]=="ERROR" )
-	{
-	    $ret['type']='html';
-        $ret['data'] = array('未找到: 切换搜索源/再搜一遍');
-	}
+    if( count($ret['data'])==1 )
+        if( $ret['data'][0]=="ERROR" )
+        {
+            $ret['type']='html';
+            $ret['data'] = array('未找到资源，切换引擎或关键词再试一次吧');
+        }
 }
 else
 {
@@ -231,7 +232,7 @@ else
     else
     {
 		$ret['type'] = 'html';
-        $ret['data'] = array('未找到: 切换搜索源/再搜一遍');
+        $ret['data'] = array('未找到资源，切换引擎或关键词再试一次吧');
     }
 }    
 die( json_encode($ret) );

@@ -2,7 +2,7 @@
 function qvod_play(id){
     if( typeof($)!='undefined' )
     {
-        url = '/ajax.php?source='+ encodeURIComponent('http://www.9skb.com/SResultItem/'+id+'.html');
+        url = 'ajax.php?source='+ encodeURIComponent('http://www.9skb.com/SResultItem/'+id+'.html');
         $.getJSON(url,function( ret ){
 	        for( i=0; i<ret.data.length; i++ )
             	$('#'+id).append( ' <a href="'+ ret.data[i] +'" title="资源地址：'+ ret.data[i] +'" class="btn btn-default btn-sm" target=_blank>'+(i+1)+'</a> ' );
@@ -83,23 +83,22 @@ $(function(){
     $('#xigua').click(function() { resetbox(); source='xigua'; $('#movie_btn').removeClass().addClass('btn btn-warning btn-lg').text('搜索@'+source.toUpperCase());} );
     $('#list').click(function(){
 		hidebox();
-	    loading(1);
         $('.searchbox').animate({'top':'0px'}, function(){
-            toplist = ['imdb_top250', 'douban_top250', 'mtime_top100'];
+            toplist = ['_newest', 'imdb_top250', 'douban_top250', 'mtime_top100'];
             if( $('table[name="list"]').length>0 )
                 $('table[name="list"]').remove();
             for( i=0; i<toplist.length; i++){
-                url = '/ajax.php?source=list&movie='+toplist[i];
+                url = 'ajax.php?source=list&movie='+toplist[i];
+                tbl = '<table name=list id='+ toplist[i] +' class="table table-bordered" style="float:left; width:420px; margin-top:20px; margin-right:5px; font-size:12px; "><tr><td style="background-color:#222;color:#FFF;" colspan=3>list: '+ toplist[i] +'</td></tr><tr><td>loading...</td></tr></table>';
+                $('.searchbox').before( tbl );
                 $.getJSON( url, function( ret ){
 		            if( ret.type=='json' )
 		            {
                         tblid  = ret.data.title;
-                        tbl    = '<table name=list id='+ tblid +' class="table table-bordered" style="float:left; width:420px; margin-top:20px; margin-right:5px; font-size:12px; "></table>';
                         tbllst = ret.data.list;
-                        if( tbllst[0].length>10 )
-                        {
-                            $('.searchbox').after( tbl );
+                        if( tbllst[0].length>10 ){
                             tbllst = tbllst[0].split('\n');
+                            $('#'+tblid).children().remove();
                             $('#'+tblid).append( '<tr><td style="background-color:#222;color:#FFF;" colspan=3>'+ tbllst[0] +'</td></tr>' );
                             for( i=1; i<tbllst.length; i++ )
                             {
@@ -111,8 +110,7 @@ $(function(){
                         }
 		            }
                 });
-            }            
-	        loading(0);
+            }
         });
     });
     
@@ -122,11 +120,15 @@ $(function(){
         $('.searchbox').animate({'top':'0px'}, function(){
             if( $('table[name="list"]').length>0 )
                 $('table[name="list"]').remove();
-			url = '/ajax.php?source=custom&movie=*';
+			url = 'ajax.php?source=custom&movie=*';
 			$.getJSON( url, function( ret ){
 				if( ret.type=='json' )
 				{
                 	tbllst = ret.data;
+                    if(tbllst.length<1){
+                        $('.searchbox').after( '<table name=list style="margin:100px;width:300px;"><tr><td class=well>暂无</td></tr></table>' );
+                        return;
+                    }
                     for(i=tbllst.length-1; i>=0; i--)
                     {
                         tbl = '<table name=list id=custom_'+ i +' class="table table-bordered" style="float:left; width:300px; margin-top:20px; margin-right:5px; font-size:12px; "></table>';
@@ -200,7 +202,7 @@ $(function(){
             return false;
         }
         
-        url = '/ajax.php?source='+source+'&movie='+ encodeURIComponent(movie);
+        url = 'ajax.php?source='+source+'&movie='+ encodeURIComponent(movie);
         resdiv = '<table id=restable class="table table-bordered" style="display:none;"></table>';
         loading(1);
         $.getJSON(url,function( ret ){
@@ -223,5 +225,4 @@ $(function(){
 	        loading(0);
         });
     });
-    
 });

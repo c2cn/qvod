@@ -6,7 +6,16 @@
 <link rel="stylesheet" type="text/css" href="index.css" />
 </head>
 <body>
-
+<?php
+//crond.php for ENVs not SAE
+if( !class_exists('SaeFetchurl') ){
+    $day   = intval( date('d') );
+    $every = 2; //every ** days, min 2 days, for _newest
+    if( $day>=$every && $day%$every==0 ){
+        echo '<img src=cron.php height=0 width=0 />';
+    }
+}
+?>
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
@@ -18,10 +27,10 @@
                 <li><a href="javascript:void(0);" id="qvod">QVOD</a></li>
                 <li><a href="javascript:void(0);" id="xigua">XIGUA</a></li>
                 <li><a href="javascript:void(0);" id="gvod">GVOD</a></li>
-                <li><a href="javascript:void(0);" id="list">TOP</a></li>
-                <li><a href="javascript:void(0);" id="custom">最新/专辑</a></li>
+                <li><a href="javascript:void(0);" id="list">NEW/TOP</a></li>
+                <li><a href="javascript:void(0);" id="custom">专辑</a></li>
                 <li><a href="javascript:void(0);" id="itv">直播</a></li>
-                <li style="color:#666;" title="version: 20140701" id="sae">SAE INSIDE</li>                
+                <li style="color:#666;font-size:10px" title="version: 20141202" id="sae">SAE INSIDE</li>                
             </ul>
         </div>
     </div>
