@@ -1,8 +1,10 @@
----
 name: 6zou
 version: 1
-...
 cron:
 - description: toplist
   url: /cron.php
   schedule: "30 3 */3 * *"
+handle:
+
+- compress: if ( out_header["Content-type"] ~ "application/json" ) compress
+- compress: if ( out_header["Content-type"] ~ "application/javascript" ) compress

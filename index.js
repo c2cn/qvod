@@ -56,9 +56,9 @@ function showlist( id )
         }
 	});    
     if( $('#'+id+' tr:last-child').css('display')=='none' )
-        $( '#updown'+id.replace('custom_','') ).removeClass().addClass('glyphicon glyphicon-resize-full');
+        $( '#updown'+id.replace('custom_','') ).removeClass().addClass('glyphicon glyphicon-minus');
     else
-        $( '#updown'+id.replace('custom_','') ).removeClass().addClass('glyphicon glyphicon-resize-small');
+        $( '#updown'+id.replace('custom_','') ).removeClass().addClass('glyphicon glyphicon-plus');
 };
 
 function add2list( movie )
@@ -89,7 +89,7 @@ $(function(){
                 $('table[name="list"]').remove();
             for( i=0; i<toplist.length; i++){
                 url = 'ajax.php?source=list&movie='+toplist[i];
-                tbl = '<table name=list id='+ toplist[i] +' class="table table-bordered" style="float:left; width:420px; margin-top:20px; margin-right:5px; font-size:12px; "><tr><td style="background-color:#222;color:#FFF;" colspan=3>list: '+ toplist[i] +'</td></tr><tr><td>loading...</td></tr></table>';
+                tbl = '<table name=list id='+ toplist[i] +' class="table table-bordered" style="float:left; width:auto; margin-top:20px; margin-right:5px; font-size:12px; "><tr><td style="background-color:#222;color:#FFF;" colspan=3>list: '+ toplist[i] +'</td></tr><tr><td>loading...</td></tr></table>';
                 $('.searchbox').before( tbl );
                 $.getJSON( url, function( ret ){
 		            if( ret.type=='json' )
@@ -105,7 +105,7 @@ $(function(){
                                 mname = tbllst[i].split('|||')[0];
                                 murl  = tbllst[i].split('|||')[1];
                                 if( mname!='' && murl!='' )
-	                            	$('#'+tblid).append( '<tr><td>'+ i +'</td><td>'+ mname +'</td><td><a href='+murl+' target=_blank class="btn btn-default btn-sm">详情</a> <a href="javascript:add2list(\''+mname+'\')" target=_blank class="btn btn-primary btn-sm">播放</a></td></tr>' );
+	                            	$('#'+tblid).append( '<tr><td>'+ i +'</td><td>'+ mname +'</td><td><a href='+murl+' target=_blank class="btn btn-default btn-xs">详情</a> <a href="javascript:add2list(\''+mname+'\')" target=_blank class="btn btn-primary btn-xs">播放</a></td></tr>' );
                             }
                         }
 		            }
@@ -116,11 +116,11 @@ $(function(){
     
     $('#custom').click(function(){
 		hidebox();
-	    loading(1);
         $('.searchbox').animate({'top':'0px'}, function(){
             if( $('table[name="list"]').length>0 )
                 $('table[name="list"]').remove();
 			url = 'ajax.php?source=custom&movie=*';
+			$('.searchbox').after( '<table name=list style="margin:100px;width:300px;"><tr><td class=well>读取列表中...</td></tr></table>' );
 			$.getJSON( url, function( ret ){
 				if( ret.type=='json' )
 				{
@@ -129,13 +129,15 @@ $(function(){
                         $('.searchbox').after( '<table name=list style="margin:100px;width:300px;"><tr><td class=well>暂无</td></tr></table>' );
                         return;
                     }
+	    	        if( $('table[name="list"]').length>0 )
+    	    	        $('table[name="list"]').remove();
                     for(i=tbllst.length-1; i>=0; i--)
                     {
-                        tbl = '<table name=list id=custom_'+ i +' class="table table-bordered" style="float:left; width:300px; margin-top:20px; margin-right:5px; font-size:12px; "></table>';
+                        tbl = '<table name=list id=custom_'+ i +' class="table table-bordered" style="float:left; width:auto; min-width:19%; margin-top:20px; margin-right:5px; font-size:12px; "></table>';
                         $('.searchbox').after( tbl );
                         
                         tmplst = tbllst[i].split('\n');
-                        $('#custom_'+i).append( '<tr><td style="background-color:#222;color:#FFF;" colspan=3>'+ tmplst[0] +' -- 共 '+ (tmplst.length-2) +' 部 <div style="float:right;"><a href="javascript:showlist(\'custom_'+i+'\')"><span id=updown'+ i +' class="glyphicon glyphicon-resize-full" style="color:#FFF;"></span></a></div></td></tr>' );
+                        $('#custom_'+i).append( '<tr><td style="background-color:#222;color:#FFF;" colspan=3>'+ tmplst[0] +' -- 共 '+ (tmplst.length-2) +' 部 <div style="float:right;"><a href="javascript:showlist(\'custom_'+i+'\')"><span id=updown'+ i +' class="glyphicon glyphicon-plus" style="color:#FFF;font-weight:bold;font-size:18px;"></span></a></div></td></tr>' );
                         for( j=1; j<tmplst.length; j++)
                         {
                             if( tmplst[j] )
@@ -145,16 +147,16 @@ $(function(){
 								if( j<11 )
                                 {
                                     if( murl && mname )
-                                        $('#custom_'+i).append( '<tr><td>'+ j +'</td><td>'+ mname +'</td><td><a href='+murl+' target=_blank class="btn btn-default btn-sm">详情</a> <a href="javascript:add2list(\''+mname+'\')" target=_blank class="btn btn-primary btn-sm">播放</a></td></tr>' );
+                                        $('#custom_'+i).append( '<tr><td>'+ j +'</td><td>'+ mname +'</td><td><a href='+murl+' target=_blank class="btn btn-default btn-xs">详情</a> <a href="javascript:add2list(\''+mname+'\')" target=_blank class="btn btn-primary btn-xs">播放</a></td></tr>' );
                                     else
-                                        $('#custom_'+i).append( '<tr><td>'+ j +'</td><td>'+ mname +'</td><td><a href="javascript:add2list(\''+mname+'\')" target=_blank class="btn btn-primary btn-sm">播放</a></td></tr>' );
+                                        $('#custom_'+i).append( '<tr><td>'+ j +'</td><td>'+ mname +'</td><td><a href="http://movie.douban.com/subject_search?search_text='+mname+'" target=_blank class="btn btn-default btn-xs">详情</a> <a href="javascript:add2list(\''+mname+'\')" target=_blank class="btn btn-primary btn-xs">播放</a></td></tr>' );
                                 }
                                 else
                                 {
                                     if( murl && mname )
-                                        $('#custom_'+i).append( '<tr style="display:none;"><td>'+ j +'</td><td>'+ mname +'</td><td><a href='+murl+' target=_blank class="btn btn-default btn-sm">详情</a> <a href="javascript:add2list(\''+mname+'\')" target=_blank class="btn btn-primary btn-sm">播放</a></td></tr>' );
+                                        $('#custom_'+i).append( '<tr style="display:none;"><td>'+ j +'</td><td>'+ mname +'</td><td><a href='+murl+' target=_blank class="btn btn-default btn-xs">详情</a> <a href="javascript:add2list(\''+mname+'\')" target=_blank class="btn btn-primary btn-xs">播放</a></td></tr>' );
                                     else
-                                        $('#custom_'+i).append( '<tr style="display:none;"><td>'+ j +'</td><td>'+ mname +'</td><td><a href="javascript:add2list(\''+mname+'\')" target=_blank class="btn btn-primary btn-sm">播放</a></td></tr>' );
+                                        $('#custom_'+i).append( '<tr style="display:none;"><td>'+ j +'</td><td>'+ mname +'</td><td><a href="http://movie.douban.com/subject_search?search_text='+mname+'" target=_blank class="btn btn-default btn-xs">详情</a> <a href="javascript:add2list(\''+mname+'\')" target=_blank class="btn btn-primary btn-xs">播放</a></td></tr>' );
                                 }
                             }
                         }
@@ -162,8 +164,7 @@ $(function(){
 	                        $('#custom_'+i).append( '<tr><td colspan=3 align=right onclick="showlist(\'custom_'+i+'\')">...</td></tr>' );
                     }
 				}
-			});                 
-	        loading(0);
+			});
         });
     });
     
@@ -220,7 +221,7 @@ $(function(){
             }
             else
             {
-                $('#restable').toggleClass('table-bordered').append( '<tr><td width="40%" style="border:0px;"></td><td style="border:0px;">'+ ret.data[0] +'</td><td width="40%" style="border:0px;"></td></tr>' );
+                $('#restable').toggleClass('table-bordered').append( '<tr><td width="30%" style="border:0px;"></td><td style="border:0px;">'+ ret.data[0] +'</td><td width="30%" style="border:0px;"></td></tr>' );
             }
 	        loading(0);
         });
