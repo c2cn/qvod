@@ -182,12 +182,12 @@ function latest()
     $ftime  = new DateTime( date('Y-m-d H:i:s', $lastupdate['datetime']) );
 	$days   = $now->diff($ftime);
 
-    if( $days->format('%d')>1 || !$s->fileExists($d,$f)  )
+    if( $days->format('%d')>0 || !$s->fileExists($d,$f)  )
     {
-	    $html = SAE_GET( 'http://movie.mtime.com/new/release/' );
+	    $html = SAE_GET( 'http://theater.mtime.com/China_Beijing/' );
 		for( $i=1; $i<5; $i++ )
         	$html .= SAE_GET( 'http://movie.mtime.com/new/release/index-'.($i+1).'.html');        
-        preg_match_all( '/<h3><a href="([^"]+)" target="_blank" >([^<]+)<\/a><\/h3>/i', $html, $mtime);
+        preg_match_all( '/,"Url":"([^"]+)","Title":"([^"]+)"}/i', $html, $mtime);
 		$html = '';
 		for( $i=0; $i<count( $mtime[2] ); $i++ )
         {
