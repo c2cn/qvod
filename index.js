@@ -78,10 +78,11 @@ $(function(){
     }).attr('title','双击可去掉括号内容');
     
     //切换源
-    $('#qvod').click( function() { resetbox(); source='qvod';  $('#movie_btn').removeClass().addClass('btn btn-primary btn-lg').text('搜索@'+source.toUpperCase());} );
-    $('#gvod').click( function() { resetbox(); source='gvod';  $('#movie_btn').removeClass().addClass('btn btn-success btn-lg').text('搜索@'+source.toUpperCase());} );
-    $('#xigua').click(function() { resetbox(); source='xigua'; $('#movie_btn').removeClass().addClass('btn btn-warning btn-lg').text('搜索@'+source.toUpperCase());} );
+    $('#qvod').click( function() { location.hash = '#qvod'; resetbox(); source='qvod';  $('#movie_btn').removeClass().addClass('btn btn-primary btn-lg').text('搜索@'+source.toUpperCase());} );
+    $('#gvod').click( function() { location.hash = '#gvod'; resetbox(); source='gvod';  $('#movie_btn').removeClass().addClass('btn btn-success btn-lg').text('搜索@'+source.toUpperCase());} );
+    $('#xigua').click(function() { location.hash = '#xigua'; resetbox(); source='xigua'; $('#movie_btn').removeClass().addClass('btn btn-warning btn-lg').text('搜索@'+source.toUpperCase());} );
     $('#list').click(function(){
+        location.hash = '#list';
 		hidebox();
         $('.searchbox').animate({'top':'0px'}, function(){
             toplist = ['_newest', 'imdb_top250', 'douban_top250', 'mtime_top100'];
@@ -115,7 +116,8 @@ $(function(){
     });
     
     $('#custom').click(function(){
-		hidebox();
+        location.hash = '#custom';
+        hidebox();
         $('.searchbox').animate({'top':'0px'}, function(){
             if( $('table[name="list"]').length>0 )
                 $('table[name="list"]').remove();
@@ -169,6 +171,7 @@ $(function(){
     });
     
     $('#itv').click(function(){
+        location.hash = '#itv';
         hidebox();
         loading(1);
         resdiv = '<iframe id=restable style="height:100%;width:100%;margin:0;padding:0;border:0;margin-top:20px;" src="http://live.64ma.com/tv/live.html" frameborder="0" scrolling="no"></iframe>';
@@ -202,6 +205,7 @@ $(function(){
             $('#movie').focus();
             return false;
         }
+        location.hash = '#search/'+source+'/'+encodeURIComponent(movie);
         
         url = 'ajax.php?source='+source+'&movie='+ encodeURIComponent(movie);
         resdiv = '<table id=restable class="table table-bordered" style="display:none;"></table>';
@@ -226,4 +230,22 @@ $(function(){
 	        loading(0);
         });
     });
+    
+    //--subpage--
+    var hash = location.hash ? location.hash : '';
+    if(hash){
+        if( hash.match(/#(\w+)$/) ){
+            var page = RegExp.$1;
+            if(page)
+                $('#'+page).trigger('click');
+        }else if( hash.match(/#search\/([^\/]+)\/(.*)/ig) ){
+            var so = RegExp.$1;
+            var kw = decodeURIComponent(RegExp.$2);
+            if(so&&kw){
+                $('#'+so).trigger('click');
+                $('#movie').val(kw);
+                $('#movie_btn').trigger('click');
+            }
+        }
+    }
 });
