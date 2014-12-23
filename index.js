@@ -105,7 +105,7 @@ $(function(){
                                 mname = tbllst[i].split('|||')[0];
                                 murl  = tbllst[i].split('|||')[1];
                                 if( mname!='' && murl!='' )
-	                            	$('#'+tblid).append( '<tr><td>'+ i +'</td><td>'+ mname +'</td><td><a href='+murl+' target=_blank class="btn btn-default btn-xs">详情</a> <a href="javascript:add2list(\''+mname+'\')" target=_blank class="btn btn-primary btn-xs">播放</a></td></tr>' );
+                                    $('#'+tblid).append( '<tr><td>'+ i +'</td><td>'+ mname.replace( /\((\d+)\)/, '<span style="position:absolute;margin-top:-10px;font-size:10px;">$1</span>' ) +'</td><td><a href='+murl+' target=_blank class="btn btn-default btn-xs">详情</a> <a href="javascript:add2list(\''+mname+'\')" target=_blank class="btn btn-primary btn-xs">播放</a></td></tr>' );
                             }
                         }
 		            }
